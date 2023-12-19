@@ -1,0 +1,66 @@
+function allProps = rtrace(z,rz,root)
+
+
+    % Number of branch points \ Total volume \ Mean branch length \ Branch Depth \ Cell body size
+
+    fprintf(['\n\n**************************\nw/s=raise/lower threshold; ' ...
+        '\na/d=previous/next ROI\np=process ROI\tq=quit\n**************************\n\n'])
+
+    done = false;
+    thresh = 0.96;
+    doRegion = 1;
+    allProps = [];
+    didChange = true;
+    while ~done
+
+        if didChange
+            minPixIm = bwareaopen(z>thresh,5000); % minimum pixels
+            lm = labelmatrix(bwconncomp(minPixIm));
+        end
+
+        figure(1)
+        set(gcf,'position',[200 200 1000 500])
+        subplot(1,2,1)
+        imagesc(nanmax(rz,[],3))
+        axis equal
+        axis off
+        subplot(1,2,2)
+        colormap('jet')
+        imagesc(nanmax(lm==doRegion,[],3))
+        alpha(double(nanmax(lm~=0,[],3)))
+        axis equal
+        axis off
+
+        w = waitforbuttonpress;
+        if w
+           str = get(gcf, 'CurrentCharacter');
+        end
+            
+        if  str == 'w'
+            thresh = thresh + 0.001;
+            didChange = true;
+        elseif str == 's'
+            thresh = thresh - 0.001;
+            didChange = true;
+        elseif str == 'a'
+            doRegion = nanmax(doRegion-1,1);
+            didChange = false;
+        elseif str == 'd'
+            doRegion = nanmin(doRegion+1,nanmax(lm(:)));
+            didChange = false;
+        elseif str == 'p'
+            allProps = [allProps; getProp(lm==doRegion)];
+
+            figure(2)
+            saveFig(gcf,['O-Plots12192023/Skeletons/' slind(root,[1 3],'/\.') '/ROI_' num2str(length(allProps(:,1)))],'tiff'); %CHANGED
+            close(2)
+            didChange = false;
+        elseif str == 'q'
+            done = true;
+            continue
+        end
+    end
+
+    allProps = [repmat({slind(root,[1 3],'\/.')},[length(allProps(:,1)) 1]) num2cell([[1:length(allProps(:,1))]' allProps])];
+
+end
