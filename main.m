@@ -1,13 +1,11 @@
 
-doFolder = ['1012'];
+doFolder = ['1019'];
 
-% paths = getFilePaths(['RawData/' doFolder],'.czi');
+%paths = getFilePaths(['RawData/' doFolder],'.czi');
 paths = getFilePaths(['RawData\' doFolder],'.czi');
-
 
 %%
 % Number of branch points \ Total volume \ Mean branch length \ Branch Depth \ Cell body size
-
 allProperties = [{'Filename'} {'ROI_Number'} {'Number of branch points'} {'Total Area'} {'Mean Branch Length'} ...
     {'Branch Depth'} {'Cell Body Size'}];
 for p = paths'
@@ -24,6 +22,20 @@ for p = paths'
     allProperties = [allProperties; tmp];
 end
 
-xlswrite(['ROI_Stats_Oscar\Mino\ROI_Stats_' doFolder],allProperties) % CHANGE THIS IF YOU WANT TO WRITE TO DIFFERENT FILE NAME
 
-%"C:\Users\oaguil6\Desktop\ROI_Stats_Oscar\Mino\ROI_Stats_1012.xls"
+
+basePath = '\Users\oaguil6\Sparta Lab Dropbox\Sparta Lab Team Folder\Data Analysis Microglia\Sparta_Lab\O-Plots12192023\Skeletons\';
+makePath = fullfile(basePath, doFolder);
+if ~exist(makePath, 'dir') % If subject skeleton folder doesnt exist -->
+    if exist(paths, 'dir') % if subject file exists in raw data -->
+       mkdir(makePath); % Make directory folder inside of sKELETONS
+    else 
+        fprintf('file does not exist in raw folder'); % or it doesnt exist and do nothing.
+    end
+else
+    fprintf('you good G \n') % if the skeleton folder already exists print this!
+end
+
+
+xlswrite(['ROI_Stats_Oscar\Mino\ROI_Stats_' doFolder],allProperties) % CHANGE THIS IF YOU WANT TO WRITE TO DIFFERENT XL FILE NAME
+
