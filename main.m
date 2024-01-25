@@ -1,7 +1,6 @@
 
-doFolder = ['1019'];
+doFolder = ['1031'];
 
-%paths = getFilePaths(['RawData/' doFolder],'.czi');
 paths = getFilePaths(['RawData\' doFolder],'.czi');
 
 %%
@@ -23,19 +22,11 @@ for p = paths'
 end
 
 
+sourceRaw = fullfile('\RawData\', [doFolder]);
+csvFileLoc = fullfile('ROI_Stats_Oscar\DB');
 
-basePath = '\Users\oaguil6\Sparta Lab Dropbox\Sparta Lab Team Folder\Data Analysis Microglia\Sparta_Lab\O-Plots12192023\Skeletons\';
-makePath = fullfile(basePath, doFolder);
-if ~exist(makePath, 'dir') % If subject skeleton folder doesnt exist -->
-    if exist(paths, 'dir') % if subject file exists in raw data -->
-       mkdir(makePath); % Make directory folder inside of sKELETONS
-    else 
-        fprintf('file does not exist in raw folder'); % or it doesnt exist and do nothing.
-    end
-else
-    fprintf('you good G \n') % if the skeleton folder already exists print this!
-end
+createCSVsFromSourceFolder(sourceRaw, csvFileLoc);
 
 
-xlswrite(['ROI_Stats_Oscar\Mino\ROI_Stats_' doFolder],allProperties) % CHANGE THIS IF YOU WANT TO WRITE TO DIFFERENT XL FILE NAME
+xlswrite(['ROI_Stats_Oscar\DB\ROI_Stats_' doFolder],allProperties) % CHANGE THIS IF YOU WANT TO WRITE TO DIFFERENT XL FILE NAME
 
