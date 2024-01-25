@@ -1,0 +1,29 @@
+function createCSVsFromSourceFolder(sourceFolderPath, destinationFolderPath)
+   
+
+% Check if the destination folder exists, if not, create it
+    if ~exist(destinationFolderPath, 'dir')
+        fprintf('destination folder doesnt exist');
+    end
+
+    % List all files in the given source folder
+    files = dir(sourceFolderPath); %dir() function call returns a structure array containing information about all the files and folders in the specified path
+
+    % Filter out directories from the list
+    files = files(~[files.isdir]);
+
+    % Iterate over each file and create a corresponding CSV file in the destination folder
+    for i = 1:length(files)
+        originalFileName = files(i).name;
+        [~, name, ~] = fileparts(originalFileName); % Extract the name without extension
+
+        % Define the new CSV file name
+        csvFileName = fullfile(destinationFolderPath, [name '.csv']);
+
+        % Create an empty table or add content as needed
+        emptyTable = table();
+
+        % Write the table to the CSV file
+        writetable(emptyTable, csvFileName);
+    end
+end
